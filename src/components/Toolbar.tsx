@@ -17,6 +17,7 @@ import {
   Ruler,
   Component,
   Scissors,
+  WrapText,
 } from 'lucide-react';
 import { useAppStore, type Tool } from '../store';
 import { getEngine } from './Sketch';
@@ -59,6 +60,10 @@ const toolRows: ToolRow[] = [
   [
     { id: 'dot', icon: <Circle size={8} fill="currentColor" />, label: 'Dot', shortcut: 'D' },
     { id: 'text', icon: <Type size={18} />, label: 'Text', shortcut: 'T' },
+  ],
+  // Text Arc
+  [
+    { id: 'textArc', icon: <WrapText size={18} />, label: 'Text Arc', shortcut: 'G' },
   ],
   null, // separator
   // Cut

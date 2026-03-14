@@ -18,6 +18,12 @@ export interface SelectionPropsPayload {
   textAlignH: 'left' | 'center' | 'right';
   textAlignV: 'top' | 'center' | 'bottom';
   canBoolean: boolean;
+  fontFamily: string;
+  fontSize: number;
+  isTextArc: boolean;
+  letterSpacing: number;
+  textArcRotation: number;
+  cornerRadius: number;
 }
 
 /** Callbacks emitted by the engine to notify the UI. */

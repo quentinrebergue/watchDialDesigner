@@ -58,6 +58,24 @@ function onMouseDown(e: CanvasEngine, event: paper.ToolEvent) {
     }
     case 'cut': e.tools.drawStartPoint = point; break;
     case 'text': e.tools.drawStartPoint = point; break;
+    case 'textArc': {
+      if (e.tools.textArc.state) {
+        // Step 2: user picked the arc center
+        const item = e.tools.textArc.commit(point, e.strokeColor);
+        if (item) {
+          e.pushUndoState();
+          e.autoSelect(item);
+        }
+        e.onStatusMessage?.(null);
+      } else {
+        // Step 1: user placed the anchor point — prompt for text
+        const ok = e.tools.textArc.beginArc(point, e.strokeColor);
+        if (ok) {
+          e.onStatusMessage?.('Click a point to set the arc center');
+        }
+      }
+      break;
+    }
   }
 }
 
@@ -84,6 +102,12 @@ function onMouseDrag(e: CanvasEngine, event: paper.ToolEvent) {
     }
     case 'cut': e.tools.showCutPreview(point); break;
     case 'text': e.tools.showTextPreview(point); break;
+    case 'textArc': {
+      if (e.tools.textArc.state) {
+        e.tools.textArc.showPreview(point, e.strokeColor);
+      }
+      break;
+    }
   }
 }
 
@@ -135,6 +159,10 @@ function onMouseMove(e: CanvasEngine, event: paper.ToolEvent) {
     const point = e.snapMgr.snapPoint(event.point);
     e.tools.showPolylinePreview(point, e.drawStyle);
   }
+  if (e.currentTool === 'textArc' && e.tools.textArc.state) {
+    const point = e.snapMgr.snapPoint(event.point);
+    e.tools.textArc.showPreview(point, e.strokeColor);
+  }
 }
 
 function onKeyDown(e: CanvasEngine, event: paper.KeyEvent) {
@@ -148,6 +176,7 @@ function onKeyDown(e: CanvasEngine, event: paper.KeyEvent) {
     e.tools.clearMeasure();
     e.tools.measureStartPoint = null;
     e.tools.drawStartPoint = null;
+    e.tools.textArc.cancel();
     e.tools.finishPolyline(false, e.drawStyle);
     e.selection.deselectAll();
   }

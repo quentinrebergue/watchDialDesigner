@@ -296,6 +296,11 @@ export class CanvasEngine {
   setSelectionStrokeWidth(w: number) { this.selection.setStrokeWidth(w, () => this.pushUndoState()); }
   setSelectionTextAlignH(a: 'left' | 'center' | 'right') { this.selection.setTextAlignH(a, () => this.pushUndoState()); }
   setSelectionTextAlignV(a: 'top' | 'center' | 'bottom') { this.selection.setTextAlignV(a, () => this.pushUndoState()); }
+  setSelectionFontFamily(f: string) { this.selection.setFontFamily(f, () => this.pushUndoState()); }
+  setSelectionFontSize(s: number) { this.selection.setFontSize(s, () => this.pushUndoState()); }
+  setSelectionLetterSpacing(s: number) { this.selection.setLetterSpacing(s, () => this.pushUndoState()); }
+  setSelectionTextArcRotation(d: number) { this.selection.setTextArcRotation(d, () => this.pushUndoState()); }
+  setSelectionCornerRadius(r: number) { this.selection.setCornerRadius(r, () => this.pushUndoState()); }
 
   // Boolean / transform operations (delegated to standalone functions)
   radialClone(count: number) { startRadialClone(this, count); }

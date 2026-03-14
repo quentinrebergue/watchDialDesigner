@@ -1,5 +1,6 @@
 import type { EngineContext } from './types';
 import { buildMeasureGroup, showMeasurePreview } from './tools/MeasureTool';
+import { TextArcTool } from './tools/TextArcTool';
 
 interface DrawStyle {
   strokeColor: string;
@@ -25,8 +26,12 @@ export class DrawingTools {
   // Arc state
   arcThrough: paper.Point | null = null;
 
+  // Text Arc tool
+  textArc: TextArcTool;
+
   constructor(ctx: EngineContext) {
     this.ctx = ctx;
+    this.textArc = new TextArcTool(ctx);
   }
 
   // ── Shared style helpers ─────────────────────────────────

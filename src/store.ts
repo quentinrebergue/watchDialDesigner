@@ -18,6 +18,7 @@ export type Tool =
   | 'polygon'
   | 'dot'
   | 'text'
+  | 'textArc'
   | 'measure'
   | 'cut'
   | 'pan';

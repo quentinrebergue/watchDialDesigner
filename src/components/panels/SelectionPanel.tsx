@@ -163,6 +163,23 @@ export function SelectionPanel() {
         </Field>
       </div>
 
+      {/* Corner Radius */}
+      {!selectionProps.isText && !selectionProps.isTextArc && (
+        <Field label="Corner R (mm)">
+          <input
+            type="number"
+            value={parseFloat((selectionProps.cornerRadius ?? 0).toFixed(2))}
+            onChange={(e) => {
+              const v = parseFloat(e.target.value);
+              if (!isNaN(v) && v >= 0) getEngine()?.setSelectionCornerRadius(v);
+            }}
+            step={0.1}
+            min={0}
+            className="w-full bg-gray-50 border border-gray-200 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-blue-400"
+          />
+        </Field>
+      )}
+
       {/* Text properties */}
       {selectionProps.isText && (
         <div className="pt-1 border-t border-gray-100 flex flex-col gap-1.5">
@@ -171,6 +188,34 @@ export function SelectionPanel() {
               type="text"
               value={selectionProps.textContent}
               onChange={(e) => getEngine()?.setSelectionTextContent(e.target.value)}
+              className="w-full bg-gray-50 border border-gray-200 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-blue-400"
+            />
+          </Field>
+          <Field label="Font">
+            <FontSelect value={selectionProps.fontFamily} />
+          </Field>
+          <Field label="Size">
+            <input
+              type="number"
+              value={parseFloat((selectionProps.fontSize ?? 12).toFixed(1))}
+              onChange={(e) => {
+                const v = parseFloat(e.target.value);
+                if (!isNaN(v) && v > 0) getEngine()?.setSelectionFontSize(v);
+              }}
+              step={1}
+              min={1}
+              className="w-full bg-gray-50 border border-gray-200 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-blue-400"
+            />
+          </Field>
+          <Field label="Spacing">
+            <input
+              type="number"
+              value={parseFloat((selectionProps.letterSpacing ?? 0).toFixed(1))}
+              onChange={(e) => {
+                const v = parseFloat(e.target.value);
+                if (!isNaN(v)) getEngine()?.setSelectionLetterSpacing(v);
+              }}
+              step={0.5}
               className="w-full bg-gray-50 border border-gray-200 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-blue-400"
             />
           </Field>
@@ -201,6 +246,55 @@ export function SelectionPanel() {
                 </button>
               ))}
             </div>
+          </Field>
+        </div>
+      )}
+
+      {/* Text Arc properties */}
+      {selectionProps.isTextArc && (
+        <div className="pt-1 border-t border-gray-100 flex flex-col gap-1.5">
+          <span className="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Arc Text</span>
+          <Field label="Text">
+            <input
+              type="text"
+              value={selectionProps.textContent}
+              onChange={(e) => getEngine()?.setSelectionTextContent(e.target.value)}
+              className="w-full bg-gray-50 border border-gray-200 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-blue-400"
+            />
+          </Field>
+          <Field label="Font">
+            <FontSelect value={selectionProps.fontFamily} />
+          </Field>
+          <Field label="Size">
+            <input
+              type="number"
+              value={parseFloat((selectionProps.fontSize ?? 6).toFixed(1))}
+              onChange={(e) => {
+                const v = parseFloat(e.target.value);
+                if (!isNaN(v) && v > 0) getEngine()?.setSelectionFontSize(v);
+              }}
+              step={1}
+              min={1}
+              className="w-full bg-gray-50 border border-gray-200 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-blue-400"
+            />
+          </Field>
+          <Field label="Spacing">
+            <input
+              type="number"
+              value={parseFloat((selectionProps.letterSpacing ?? 0).toFixed(1))}
+              onChange={(e) => {
+                const v = parseFloat(e.target.value);
+                if (!isNaN(v)) getEngine()?.setSelectionLetterSpacing(v);
+              }}
+              step={0.5}
+              className="w-full bg-gray-50 border border-gray-200 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-blue-400"
+            />
+          </Field>
+          <Field label="Arc Rotation (°)">
+            <RotationInput
+              rotation={selectionProps.textArcRotation}
+              onCommit={(v) => getEngine()?.setSelectionTextArcRotation(v)}
+            />
           </Field>
         </div>
       )}
@@ -324,5 +418,28 @@ function RotationInput({ rotation, onCommit }: { rotation: number; onCommit: (v:
       max={360}
       className="w-full bg-gray-50 border border-gray-200 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-blue-400"
     />
+  );
+}
+
+function FontSelect({ value }: { value: string }) {
+  return (
+    <select
+      value={value}
+      onChange={(e) => getEngine()?.setSelectionFontFamily(e.target.value)}
+      className="w-full bg-gray-50 border border-gray-200 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-blue-400"
+    >
+      <option value="Helvetica, Arial, sans-serif">Helvetica</option>
+      <option value="Arial, sans-serif">Arial</option>
+      <option value="Georgia, serif">Georgia</option>
+      <option value="Times New Roman, serif">Times New Roman</option>
+      <option value="Courier New, monospace">Courier New</option>
+      <option value="Verdana, sans-serif">Verdana</option>
+      <option value="Trebuchet MS, sans-serif">Trebuchet MS</option>
+      <option value="Impact, sans-serif">Impact</option>
+      <option value="Comic Sans MS, cursive">Comic Sans MS</option>
+      <option value="Palatino, serif">Palatino</option>
+      <option value="Garamond, serif">Garamond</option>
+      <option value="Futura, sans-serif">Futura</option>
+    </select>
   );
 }

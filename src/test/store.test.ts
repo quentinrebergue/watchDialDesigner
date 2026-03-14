@@ -109,6 +109,12 @@ describe('useAppStore', () => {
       textAlignH: 'center',
       textAlignV: 'center',
       canBoolean: false,
+      fontFamily: 'Helvetica, Arial, sans-serif',
+      fontSize: 12,
+      isTextArc: false,
+      letterSpacing: 0,
+      textArcRotation: 0,
+      cornerRadius: 0,
     });
 
     expect(useAppStore.getState().selectionProps?.x).toBe(10);

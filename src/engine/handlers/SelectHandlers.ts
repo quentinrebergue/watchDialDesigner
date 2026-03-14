@@ -1,3 +1,4 @@
+import paper from 'paper';
 import type { CanvasEngine } from '../CanvasEngine';
 import { executePendingAction } from './PendingAction';
 
@@ -55,6 +56,16 @@ export function handleSelectDown(engine: CanvasEngine, event: paper.ToolEvent, p
     } else {
       engine.selection.selectItem(topItem, shiftKey);
     }
+
+    // Check if clicking near a segment point for vertex dragging
+    engine.selection.dragSegment = null;
+    if (engine.selection.selectedItems.length === 1 && hitResult.type === 'segment' && hitResult.segment) {
+      const item = engine.selection.selectedItems[0];
+      if (item instanceof paper.Path && !item.data?.isDot && !item.data?.isTextArc) {
+        engine.selection.dragSegment = hitResult.segment;
+      }
+    }
+
     engine.selection.isDraggingSelection = true;
     engine.selection.dragStart = point;
   } else {
@@ -65,8 +76,15 @@ export function handleSelectDown(engine: CanvasEngine, event: paper.ToolEvent, p
 
 export function handleSelectDrag(engine: CanvasEngine, _: paper.ToolEvent, point: paper.Point) {
   if (engine.selection.isDraggingSelection && engine.selection.dragStart) {
-    const delta = point.subtract(engine.selection.dragStart);
-    engine.selection.selectedItems.forEach((item) => { item.position = item.position.add(delta); });
+    if (engine.selection.dragSegment) {
+      // Vertex dragging: move only the grabbed segment point
+      engine.selection.dragSegment.point = point;
+      engine.selection.updateSelectionHighlight();
+    } else {
+      // Whole-item dragging
+      const delta = point.subtract(engine.selection.dragStart);
+      engine.selection.selectedItems.forEach((item) => { item.position = item.position.add(delta); });
+    }
     engine.selection.dragStart = point;
     engine.selection.updateSelectionHighlight();
   } else if (engine.selection.dragStart) {
@@ -101,4 +119,5 @@ export function handleSelectUp(engine: CanvasEngine) {
   }
   engine.selection.isDraggingSelection = false;
   engine.selection.dragStart = null;
+  engine.selection.dragSegment = null;
 }
